@@ -1,32 +1,46 @@
-// Плагин это класс CountdownTimer, экземпляр которого создает новый таймер с настройками.
+const day = document.querySelector('[data-value="days"]')
+const hour = document.querySelector('[data-value="hours"]')
+const min = document.querySelector('[data-value="mins"]')
+const sec = document.querySelector('[data-value="secs"]')
+
+class CountdownTimer {
+	constructor({ targetDate }) {
+		this.targetDate = targetDate
+		this.start()
+		this.pad()
+		this.getTimeComponents()
+	}
+
+	start() {
+		setInterval(() => {
+			const currentTime = Date.now()
+			const newTime = this.targetDate - currentTime
+			const { days, hours, mins, secs } = this.getTimeComponents(newTime)
+
+			day.textContent = days
+			hour.textContent = hours
+			min.textContent = mins
+			sec.textContent = secs
+		}, 1000)
+	}
+
+	pad(value) {
+		return String(value).padStart(2, '0')
+	}
+
+	getTimeComponents(time) {
+		const days = this.pad(Math.floor(time / (1000 * 60 * 60 * 24)))
+		const hours = this.pad(
+			Math.floor((time % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
+		)
+		const mins = this.pad(Math.floor((time % (1000 * 60 * 60)) / (1000 * 60)))
+		const secs = this.pad(Math.floor((time % (1000 * 60)) / 1000))
+
+		return { days, hours, mins, secs }
+	}
+}
 
 new CountdownTimer({
 	selector: '#timer-1',
-	targetDate: new Date('Jul 17, 2019'),
+	targetDate: new Date('Jul 17, 2021'),
 })
-// Для подсчета значений используй следующие готовые формулы, где time - разница между targetDate и текущей датой.
-
-/*
- * Оставшиеся дни: делим значение UTC на 1000 * 60 * 60 * 24, количество
- * миллисекунд в одном дне (миллисекунды * секунды * минуты * часы)
- */
-const days = Math.floor(time / (1000 * 60 * 60 * 24))
-
-/*
- * Оставшиеся часы: получаем остаток от предыдущего расчета с помощью оператора
- * остатка % и делим его на количество миллисекунд в одном часе
- * (1000 * 60 * 60 = миллисекунды * минуты * секунды)
- */
-const hours = Math.floor((time % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
-
-/*
- * Оставшиеся минуты: получаем оставшиеся минуты и делим их на количество
- * миллисекунд в одной минуте (1000 * 60 = миллисекунды * секунды)
- */
-const mins = Math.floor((time % (1000 * 60 * 60)) / (1000 * 60))
-
-/*
- * Оставшиеся секунды: получаем оставшиеся секунды и делим их на количество
- * миллисекунд в одной секунде (1000)
- */
-const secs = Math.floor((time % (1000 * 60)) / 1000)
