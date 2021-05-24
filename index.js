@@ -6,21 +6,25 @@ const sec = document.querySelector('[data-value="secs"]')
 class CountdownTimer {
 	constructor({ targetDate }) {
 		this.targetDate = targetDate
+		this.timer()
 		this.start()
-		this.pad()
-		this.getTimeComponents()
+	}
+
+	timer() {
+		const currentTime = Date.now()
+		const newTime = this.targetDate - currentTime
+		const { days, hours, mins, secs } = this.getTimeComponents(newTime)
+		day.textContent = days
+		hour.textContent = hours
+		min.textContent = mins
+		sec.textContent = secs
 	}
 
 	start() {
-		setInterval(() => {
-			const currentTime = Date.now()
-			const newTime = this.targetDate - currentTime
-			const { days, hours, mins, secs } = this.getTimeComponents(newTime)
+		this.timer()
 
-			day.textContent = days
-			hour.textContent = hours
-			min.textContent = mins
-			sec.textContent = secs
+		setInterval(() => {
+			this.timer()
 		}, 1000)
 	}
 
